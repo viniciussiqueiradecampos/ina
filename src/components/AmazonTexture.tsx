@@ -84,32 +84,28 @@ export function AmazonTexture({
     );
   }
 
-  if (variant === 'marajoara') {
-    // Ancestral Marajoara geometric wave pattern (grafismos tradicionais da Amazônia)
+  if (variant === 'watermark') {
+    // Elegant geometric diagonal intersections as designed in Figma node 26:27
     return (
       <View
         pointerEvents="none"
         style={[styles.container, { opacity }, style]}
       >
-        <Svg width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none">
-          <G stroke={color} strokeWidth="1.8" fill="none">
-            {Array.from({ length: 8 }).map((_, i) => {
-              const x = i * 130 - 30;
-              return (
-                <Path
-                  key={i}
-                  d={`M${x},30 L${x + 35},80 L${x + 70},30 L${x + 105},80 L${x + 140},30 M${x + 20},110 L${x + 55},160 L${x + 90},110 L${x + 125},160`}
-                />
-              );
-            })}
+        <Svg width="100%" height="100%" viewBox="0 0 1440 600" preserveAspectRatio="none">
+          <G stroke={color} strokeWidth="1" fill="none">
+            <Path d="M-100,50 L800,650" />
+            <Path d="M600,-50 L1550,550" />
+            <Path d="M300,-100 L1100,700" />
+            <Path d="M1200,-50 L400,650" strokeWidth="0.8" />
+            <Path d="M1500,100 L700,650" strokeWidth="0.8" />
+            <Path d="M900,-80 L150,600" strokeWidth="0.8" />
           </G>
         </Svg>
       </View>
     );
   }
 
-  // variant === 'watermark'
-  // Atmospheric organic canopy leaf cluster
+  // Atmospheric organic canopy leaf cluster default fallback
   return (
     <View
       pointerEvents="none"

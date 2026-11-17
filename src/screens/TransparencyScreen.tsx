@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from '../components/icons/ArrowUpRight';
+import { DownloadIcon } from '../components/icons/DownloadIcon';
 
 interface ReportFile {
   title: string;
@@ -90,7 +90,7 @@ export function TransparencyScreen() {
             </Text>
           </View>
 
-          <View style={[styles.hCard, { backgroundColor: '#c9f36b' }]}>
+          <View style={[styles.hCard, { backgroundColor: '#8D9F6F' }]}>
             <Text style={[styles.hCardNumber, { color: '#08281c' }]}>87%</Text>
             <Text style={styles.hCardTitleDark}>Aplicação Direta no Território</Text>
             <Text style={styles.hCardDescDark}>
@@ -140,7 +140,7 @@ export function TransparencyScreen() {
                 accessibilityLabel={`Baixar ${doc.title}`}
               >
                 <Text style={styles.downloadBtnText}>Baixar</Text>
-                <ArrowUpRight size={15} color={colors.primary} strokeWidth={1.5} />
+                <DownloadIcon size={15} color={colors.primary} strokeWidth={1.8} />
               </TouchableOpacity>
             </View>
           ))}

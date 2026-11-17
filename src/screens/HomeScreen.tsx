@@ -15,7 +15,7 @@ import { TransparencySection } from '../components/TransparencySection';
 import { CTASection } from '../components/CTASection';
 
 interface HomeScreenProps {
-  onNavigate?: (tab: string) => void;
+  onNavigate?: (tab: string, projectId?: string) => void;
   onOpenDonate?: () => void;
 }
 
@@ -32,13 +32,13 @@ export function HomeScreen({ onNavigate, onOpenDonate }: HomeScreenProps) {
       <SupportersSection onBecomeSupporter={() => onNavigate && onNavigate('Contato')} />
 
       {/* 4. Stats & Bento Grid (with subtle Amazonian texture) */}
-      <StatsSection />
+      <StatsSection onOpenDonate={onOpenDonate} onNavigate={onNavigate} />
 
       {/* 5. Projects Section */}
-      <ProjectsSection />
+      <ProjectsSection onNavigate={onNavigate} />
 
-      {/* 6. Social Proof Section (depoimentos de agricultores, pesquisadores, parceiros e métricas) */}
-      <SocialProofSection />
+      {/* 6. Social Proof Section (carrossel de opiniões e CTAs) */}
+      <SocialProofSection onOpenDonate={onOpenDonate} onNavigate={onNavigate} />
 
       {/* 7. FAQ Section */}
       <FAQSection />
@@ -47,7 +47,7 @@ export function HomeScreen({ onNavigate, onOpenDonate }: HomeScreenProps) {
       <TransparencySection onNavigate={onNavigate} />
 
       {/* 9. Call To Action Impact Section */}
-      <CTASection />
+      <CTASection onOpenDonate={onOpenDonate} onNavigate={onNavigate} />
     </View>
   );
 }

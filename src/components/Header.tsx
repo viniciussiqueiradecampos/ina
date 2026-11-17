@@ -7,19 +7,21 @@ import {
   useWindowDimensions,
   Modal,
   Platform,
+  Image,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { InaLogo } from './InaLogo';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+
+const inaLogoNova = require('../../assets/logo-ina-nova.webp');
+import { DonationHeartIcon } from './icons/DonationHeartIcon';
 
 export const navItems = [
-  'Início',
-  'O Instituto',
+  'Home',
+  'Quem Somos',
   'Projetos',
-  'Pessoas',
-  'Blog',
+  'Voluntários',
   'Transparência',
   'Contato',
+  'Blog',
 ];
 
 interface HeaderProps {
@@ -29,7 +31,7 @@ interface HeaderProps {
 }
 
 export function Header({
-  activeTab = 'Início',
+  activeTab = 'Home',
   onNavigate,
   onOpenDonate,
 }: HeaderProps) {
@@ -50,18 +52,24 @@ export function Header({
         {/* Brand / Official Logo */}
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => handleSelectTab('Início')}
+          onPress={() => handleSelectTab('Home')}
           style={styles.brandContainer}
           accessibilityRole="button"
-          accessibilityLabel="INÃ — página inicial"
+          accessibilityLabel="Instituto Nova Amazônia — Voltar para a página inicial"
         >
-          <InaLogo height={isDesktop ? 42 : 36} variant="original" />
+          <Image
+            source={inaLogoNova}
+            style={{ width: isDesktop ? 110 : 90, height: isDesktop ? 62 : 50 }}
+            resizeMode="contain"
+            accessible={false}
+            importantForAccessibility="no"
+          />
         </TouchableOpacity>
 
         {/* Desktop Navigation */}
         {isDesktop ? (
-          <View style={styles.navRow}>
-            {navItems.filter((i) => i !== 'Início').map((item) => {
+          <View style={styles.navRow} accessibilityRole="tablist">
+            {navItems.map((item) => {
               const isActive = activeTab === item;
               return (
                 <TouchableOpacity
@@ -69,6 +77,9 @@ export function Header({
                   activeOpacity={0.7}
                   onPress={() => handleSelectTab(item)}
                   style={styles.navLink}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: isActive }}
+                  accessibilityLabel={`Aba ${item}${isActive ? ', página atual selecionada' : ''}`}
                 >
                   <Text style={[styles.navText, isActive && styles.navTextActive]}>
                     {item}
@@ -87,12 +98,12 @@ export function Header({
             onPress={onOpenDonate}
             style={styles.donateButton}
             accessibilityRole="button"
-            accessibilityLabel="Quero doar"
+            accessibilityLabel="Fazer doação"
           >
-            <Text style={styles.donateText}>Quero doar</Text>
-            <View style={styles.donateArrow}>
-              <ArrowUpRight size={17} color={colors.white} strokeWidth={1.5} />
+            <View style={styles.donateIcon}>
+              <DonationHeartIcon size={18} color={colors.white} />
             </View>
+            <Text style={styles.donateText}>Fazer doação</Text>
           </TouchableOpacity>
 
           {!isDesktop && (
@@ -100,7 +111,9 @@ export function Header({
               activeOpacity={0.8}
               onPress={() => setMobileMenuOpen(true)}
               style={styles.hamburgerButton}
-              accessibilityLabel="Abrir menu"
+              accessibilityRole="button"
+              accessibilityLabel="Abrir menu de navegação"
+              accessibilityState={{ expanded: mobileMenuOpen }}
             >
               <View style={styles.hamburgerBar} />
               <View style={styles.hamburgerBar} />
@@ -116,32 +129,45 @@ export function Header({
           visible={mobileMenuOpen}
           animationType="fade"
           transparent
+          accessibilityViewIsModal={true}
           onRequestClose={() => setMobileMenuOpen(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.mobileMenuContent}>
               <View style={styles.mobileMenuHeader}>
                 <TouchableOpacity
-                  onPress={() => handleSelectTab('Início')}
+                  onPress={() => handleSelectTab('Home')}
                   style={styles.brandContainer}
+                  accessibilityRole="button"
+                  accessibilityLabel="Voltar para início"
                 >
-                  <InaLogo height={34} variant="original" />
+                  <Image
+                    source={inaLogoNova}
+                    style={{ width: 61, height: 34 }}
+                    resizeMode="contain"
+                    accessible={false}
+                    importantForAccessibility="no"
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setMobileMenuOpen(false)}
                   style={styles.closeButton}
-                  accessibilityLabel="Fechar menu"
+                  accessibilityRole="button"
+                  accessibilityLabel="Fechar menu de navegação"
                 >
                   <Text style={styles.closeButtonText}>✕</Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.mobileNavList}>
+              <View style={styles.mobileNavList} accessibilityRole="menu">
                 {navItems.map((item) => (
                   <TouchableOpacity
                     key={item}
                     onPress={() => handleSelectTab(item)}
                     style={styles.mobileNavItem}
+                    accessibilityRole="menuitem"
+                    accessibilityState={{ selected: activeTab === item }}
+                    accessibilityLabel={`${item}${activeTab === item ? ', selecionado' : ''}`}
                   >
                     <Text
                       style={[
@@ -163,10 +189,10 @@ export function Header({
                   if (onOpenDonate) onOpenDonate();
                 }}
               >
-                <Text style={styles.donateText}>Quero doar</Text>
-                <View style={styles.donateArrow}>
-                  <ArrowUpRight size={17} color={colors.white} strokeWidth={1.5} />
+                <View style={styles.donateIcon}>
+                  <DonationHeartIcon size={18} color={colors.white} />
                 </View>
+                <Text style={styles.donateText}>Fazer doação</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -220,10 +246,11 @@ const styles = StyleSheet.create({
   navRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 28,
+    gap: 22,
   },
   navLink: {
-    paddingVertical: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 2,
     position: 'relative',
     ...Platform.select({
       web: {
@@ -233,8 +260,9 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontFamily: fonts.sansSemiBold,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: 15,
+    lineHeight: 21,
+    letterSpacing: 0.15,
     color: colors.primary,
     fontWeight: '600',
   },
@@ -260,15 +288,19 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    paddingLeft: 23,
-    paddingRight: 18,
-    paddingVertical: 13,
+    gap: 10,
+    paddingLeft: 18,
+    paddingRight: 20,
+    paddingVertical: 12,
     ...Platform.select({
       web: {
         cursor: 'pointer',
       },
     }),
+  },
+  donateIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   donateText: {
     fontFamily: fonts.sansBold,
@@ -276,12 +308,6 @@ const styles = StyleSheet.create({
     lineHeight: 19.5,
     color: colors.white,
     fontWeight: '700',
-  },
-  donateArrow: {
-    width: 19,
-    height: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   hamburgerButton: {
     padding: 8,

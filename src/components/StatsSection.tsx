@@ -6,18 +6,23 @@ import {
   StyleSheet,
   useWindowDimensions,
   Platform,
+  Image,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+import { ArrowRight } from './icons/ArrowRight';
+import { DonationHeartIcon } from './icons/DonationHeartIcon';
 import { AmazonTexture } from './AmazonTexture';
 import { AnimatedCounter } from './AnimatedCounter';
 import { FadeInUp } from './FadeInUp';
 
+const textureNoise = require('../../assets/texture-noise.png');
+
 interface StatsSectionProps {
   onOpenDonate?: () => void;
+  onNavigate?: (tab: string) => void;
 }
 
-export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
+export function StatsSection({ onOpenDonate, onNavigate }: StatsSectionProps = {}) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1080;
   const isTablet = width >= 720 && width < 1080;
@@ -28,9 +33,6 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
 
   return (
     <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
-      {/* Subtle organic Amazonian foliage background texture */}
-      <AmazonTexture variant="foliage" color={colors.primary} opacity={0.035} />
-
       <View style={styles.container}>
         {/* Top Header with graceful entrance */}
         <FadeInUp delay={60} distance={18}>
@@ -45,9 +47,8 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
                   },
                 ]}
               >
-                Dados que mostram{'\n'}
-                o tamanho desse{' '}
-                <Text style={styles.headingItalic}>nós.</Text>
+                Números que traduzem{'\n'}
+                o nosso coletivo.
               </Text>
             </View>
 
@@ -66,11 +67,13 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
           <View style={styles.gridDesktop}>
             {/* Column 1 */}
             <FadeInUp delay={120} distance={24} style={styles.gridCol}>
-              <View style={[styles.card, styles.cardForest]}>
-                <AnimatedCounter target={500} style={styles.cardNumberWhite} />
+              <View style={[styles.card, styles.cardForest]} accessible={true} accessibilityLabel="Mais de 500 famílias beneficiadas diretamente">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={500} prefix="+" style={styles.cardNumberWhite} />
                 <Text style={styles.cardLabelWhite}>famílias</Text>
               </View>
-              <View style={[styles.card, styles.cardCream]}>
+              <View style={[styles.card, styles.cardCream]} accessible={true} accessibilityLabel="8 vídeos produzidos registrando saberes e histórias">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
                 <AnimatedCounter target={8} prefix="0" style={styles.cardNumberDarkGreen} />
                 <Text style={styles.cardLabelDarkGreen}>vídeos produzidos</Text>
               </View>
@@ -78,11 +81,13 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
 
             {/* Column 2 */}
             <FadeInUp delay={220} distance={24} style={styles.gridCol}>
-              <View style={[styles.card, styles.cardLime]}>
-                <AnimatedCounter target={700} style={styles.cardNumberDark} />
+              <View style={[styles.card, styles.cardLime]} accessible={true} accessibilityLabel="Mais de 700 mulheres capacitadas em autonomia e geração de renda">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={700} prefix="+" style={styles.cardNumberDark} />
                 <Text style={styles.cardLabelDark}>mulheres capacitadas</Text>
               </View>
-              <View style={[styles.card, styles.cardForest]}>
+              <View style={[styles.card, styles.cardForest]} accessible={true} accessibilityLabel="18 projetos socioambientais aprovados e implementados">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
                 <AnimatedCounter target={18} style={styles.cardNumberWhite} />
                 <Text style={styles.cardLabelWhite}>projetos aprovados</Text>
               </View>
@@ -90,22 +95,25 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
 
             {/* Column 3 (Spanning 2 rows) */}
             <FadeInUp delay={320} distance={24} style={styles.gridCol}>
-              <View style={[styles.card, styles.cardOrangeSpan]}>
+              <View style={[styles.card, styles.cardOrangeSpan]} accessible={true} accessibilityLabel="1.000 crianças atendidas com reforço escolar e leitura viva">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
                 <AnimatedCounter target={1000} formatThousands={true} style={styles.cardNumberHuge} />
-                <Text style={styles.cardLabelDark}>crianças atendidas</Text>
+                <Text style={styles.cardLabelWhite}>crianças atendidas</Text>
               </View>
             </FadeInUp>
 
             {/* Column 4 */}
             <FadeInUp delay={420} distance={24} style={styles.gridCol}>
-              <View style={[styles.card, styles.cardDeepDark]}>
+              <View style={[styles.card, styles.cardDeepDark]} accessible={true} accessibilityLabel="27 encontros realizados entre fóruns, seminários e feiras">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
                 <AnimatedCounter target={27} style={styles.cardNumberWhite} />
                 <View>
                   <Text style={styles.cardLabelWhite}>encontros realizados</Text>
                   <Text style={styles.cardSublabel}>fóruns, seminários e feiras</Text>
                 </View>
               </View>
-              <View style={[styles.card, styles.cardLime]}>
+              <View style={[styles.card, styles.cardLime]} accessible={true} accessibilityLabel="360 grupos culturais apoiados e valorizados">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
                 <AnimatedCounter target={360} style={styles.cardNumberDark} />
                 <Text style={styles.cardLabelDark}>grupos culturais apoiados</Text>
               </View>
@@ -115,62 +123,91 @@ export function StatsSection({ onOpenDonate }: StatsSectionProps = {}) {
           /* Responsive Mobile/Tablet Grid with Animated Numbers */
           <View style={styles.gridMobile}>
             <FadeInUp delay={100} style={[styles.card, styles.cardForest, styles.cardMobileItem]}>
-              <AnimatedCounter target={500} style={styles.cardNumberWhite} />
-              <Text style={styles.cardLabelWhite}>famílias</Text>
+              <View accessible={true} accessibilityLabel="Mais de 500 famílias beneficiadas diretamente">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={500} prefix="+" style={styles.cardNumberWhite} />
+                <Text style={styles.cardLabelWhite}>famílias</Text>
+              </View>
             </FadeInUp>
 
             <FadeInUp delay={180} style={[styles.card, styles.cardLime, styles.cardMobileItem]}>
-              <AnimatedCounter target={700} style={styles.cardNumberDark} />
-              <Text style={styles.cardLabelDark}>mulheres capacitadas</Text>
+              <View accessible={true} accessibilityLabel="Mais de 700 mulheres capacitadas">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={700} prefix="+" style={styles.cardNumberDark} />
+                <Text style={styles.cardLabelDark}>mulheres capacitadas</Text>
+              </View>
             </FadeInUp>
 
             <FadeInUp delay={260} style={[styles.card, styles.cardOrangeSpan, styles.cardMobileFull]}>
-              <AnimatedCounter target={1000} formatThousands={true} style={styles.cardNumberHugeMobile} />
-              <Text style={styles.cardLabelDark}>crianças atendidas</Text>
+              <View accessible={true} accessibilityLabel="1.000 crianças atendidas">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={1000} formatThousands={true} style={styles.cardNumberHugeMobile} />
+                <Text style={styles.cardLabelWhite}>crianças atendidas</Text>
+              </View>
             </FadeInUp>
 
             <FadeInUp delay={340} style={[styles.card, styles.cardDeepDark, styles.cardMobileItem]}>
-              <AnimatedCounter target={27} style={styles.cardNumberWhite} />
-              <View>
-                <Text style={styles.cardLabelWhite}>encontros realizados</Text>
-                <Text style={styles.cardSublabel}>fóruns, seminários e feiras</Text>
+              <View accessible={true} accessibilityLabel="27 encontros realizados: fóruns, seminários e feiras">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={27} style={styles.cardNumberWhite} />
+                <View>
+                  <Text style={styles.cardLabelWhite}>encontros realizados</Text>
+                  <Text style={styles.cardSublabel}>fóruns, seminários e feiras</Text>
+                </View>
               </View>
             </FadeInUp>
 
             <FadeInUp delay={420} style={[styles.card, styles.cardCream, styles.cardMobileItem]}>
-              <AnimatedCounter target={8} prefix="0" style={styles.cardNumberDarkGreen} />
-              <Text style={styles.cardLabelDarkGreen}>vídeos produzidos</Text>
+              <View accessible={true} accessibilityLabel="8 vídeos produzidos">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={8} prefix="0" style={styles.cardNumberDarkGreen} />
+                <Text style={styles.cardLabelDarkGreen}>vídeos produzidos</Text>
+              </View>
             </FadeInUp>
 
             <FadeInUp delay={500} style={[styles.card, styles.cardForest, styles.cardMobileItem]}>
-              <AnimatedCounter target={18} style={styles.cardNumberWhite} />
-              <Text style={styles.cardLabelWhite}>projetos aprovados</Text>
+              <View accessible={true} accessibilityLabel="18 projetos aprovados">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={18} style={styles.cardNumberWhite} />
+                <Text style={styles.cardLabelWhite}>projetos aprovados</Text>
+              </View>
             </FadeInUp>
 
             <FadeInUp delay={580} style={[styles.card, styles.cardLime, styles.cardMobileItem]}>
-              <AnimatedCounter target={360} style={styles.cardNumberDark} />
-              <Text style={styles.cardLabelDark}>grupos culturais apoiados</Text>
+              <View accessible={true} accessibilityLabel="360 grupos culturais apoiados">
+                <Image source={textureNoise} style={styles.cardNoiseOverlay} resizeMode="repeat" accessible={false} importantForAccessibility="no" />
+                <AnimatedCounter target={360} style={styles.cardNumberDark} />
+                <Text style={styles.cardLabelDark}>grupos culturais apoiados</Text>
+              </View>
             </FadeInUp>
           </View>
         )}
 
-        {/* Bottom Banner Card (Node 21:133) */}
+        {/* Direct Action Buttons matching SocialProofSection */}
         <FadeInUp delay={500} distance={20}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={onOpenDonate}
-            style={styles.bottomBanner}
-            accessibilityRole="button"
-            accessibilityLabel="Contribua com o INÃ"
-          >
-            <Text style={styles.bottomBannerSub}>
-              Ajude esses números a continuarem crescendo.
-            </Text>
-            <View style={styles.bottomBannerAction}>
-              <Text style={styles.bottomBannerActionText}>Contribua com o INÃ</Text>
-              <ArrowUpRight size={18} color={colors.primary} strokeWidth={1.5} />
-            </View>
-          </TouchableOpacity>
+          <View style={styles.directActionWrapper}>
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={() => onNavigate && onNavigate('Voluntários')}
+              style={styles.volunteerButton}
+              accessibilityRole="button"
+              accessibilityLabel="Ser um voluntário"
+            >
+              <Text style={styles.volunteerButtonText}>Ser um voluntário</Text>
+              <ArrowRight size={17} color={colors.primary} strokeWidth={1.8} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={onOpenDonate}
+              style={styles.donateButton}
+              accessibilityRole="button"
+              accessibilityLabel="Fazer doação"
+            >
+              <DonationHeartIcon size={18} color={colors.white} />
+              <Text style={styles.donateButtonText}>Fazer doação</Text>
+            </TouchableOpacity>
+          </View>
         </FadeInUp>
       </View>
     </View>
@@ -250,12 +287,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     minHeight: 180,
     overflow: 'hidden',
+    position: 'relative',
     ...Platform.select({
       web: {
         transition: 'transform 0.25s ease, box-shadow 0.25s ease',
         boxShadow: '0 4px 16px rgba(20, 61, 43, 0.05)',
       },
     }),
+  },
+  cardNoiseOverlay: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.18,
+    pointerEvents: 'none',
   },
   cardMobileItem: {
     width: 'calc(50% - 8px)' as any,
@@ -271,7 +314,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#193f2f',
   },
   cardLime: {
-    backgroundColor: colors.accent,
+    backgroundColor: '#8D9F6F',
   },
   cardCream: {
     backgroundColor: '#fffcf2',
@@ -279,7 +322,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(25, 51, 34, 0.08)',
   },
   cardOrangeSpan: {
-    backgroundColor: '#e79c5c',
+    backgroundColor: '#526635',
     flex: 1,
     minHeight: 380,
     justifyContent: 'space-between',
@@ -315,7 +358,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.serif,
     fontSize: 78,
     lineHeight: 82,
-    color: '#08281c',
+    color: colors.white,
     letterSpacing: -2,
     fontWeight: '400',
   },
@@ -323,7 +366,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.serif,
     fontSize: 68,
     lineHeight: 72,
-    color: '#08281c',
+    color: colors.white,
     letterSpacing: -2,
     fontWeight: '400',
   },
@@ -355,44 +398,56 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.65)',
     marginTop: 2,
   },
-  bottomBanner: {
-    marginTop: 30,
-    backgroundColor: colors.accent,
-    borderRadius: 20,
-    paddingHorizontal: 40,
-    paddingVertical: 26,
+  directActionWrapper: {
+    marginTop: 48,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 20,
+    justifyContent: 'center',
+    gap: 16,
+    width: '100%',
+  },
+  volunteerButton: {
+    backgroundColor: colors.white,
+    borderColor: colors.primary,
+    borderWidth: 1.5,
+    borderRadius: 100,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     ...Platform.select({
       web: {
         cursor: 'pointer',
-        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)',
-        transition: 'transform 0.22s ease',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)',
       },
     }),
   },
-  bottomBannerSub: {
+  volunteerButtonText: {
     fontFamily: fonts.sansBold,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.accentDarkText,
+    fontSize: 14,
+    color: colors.primary,
     fontWeight: '700',
   },
-  bottomBannerAction: {
+  donateButton: {
+    backgroundColor: colors.primaryButton,
+    borderRadius: 100,
+    paddingHorizontal: 30,
+    paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.primary,
-    paddingBottom: 2,
+    gap: 10,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        boxShadow: '0 4px 16px rgba(22, 75, 53, 0.24)',
+      },
+    }),
   },
-  bottomBannerActionText: {
+  donateButtonText: {
     fontFamily: fonts.sansBold,
-    fontSize: 13,
-    color: colors.primary,
+    fontSize: 14,
+    color: colors.white,
     fontWeight: '700',
   },
 });

@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+import { ArrowRight } from './icons/ArrowRight';
 
 interface FAQItem {
   id: string;
@@ -93,7 +93,7 @@ export function FAQSection() {
                 },
               ]}
             >
-              Antes de perguntar,{'\n'}talvez a resposta{'\n'}esteja aqui.
+              Dúvidas Frequentes
             </Text>
 
             <TouchableOpacity
@@ -103,7 +103,7 @@ export function FAQSection() {
               accessibilityLabel="Ainda tem dúvidas? Fale com a gente"
             >
               <Text style={styles.contactLinkText}>Ainda tem dúvidas? Fale com a gente</Text>
-              <ArrowUpRight size={17} color={colors.primary} strokeWidth={1.5} />
+              <ArrowRight size={17} color={colors.primary} strokeWidth={1.5} />
             </TouchableOpacity>
           </View>
 

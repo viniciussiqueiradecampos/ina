@@ -8,9 +8,9 @@ import {
   TextInput,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { InaLogo } from './InaLogo';
 import { ArrowRight } from './icons/ArrowRight';
 
 interface DonationModalProps {
@@ -43,16 +43,28 @@ export function DonationModal({ visible, onClose }: DonationModalProps) {
       visible={visible}
       animationType="fade"
       transparent
+      accessibilityViewIsModal={true}
       onRequestClose={resetAndClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.modalCard}>
+        <View style={styles.modalCard} accessibilityRole="dialog" aria-modal={true}>
           {/* Header */}
           <View style={styles.modalHeader}>
             <View style={styles.headerBrand}>
-              <InaLogo height={32} variant="original" />
+              <Image
+                source={require('../../assets/logo-ina-nova.webp')}
+                style={{ width: 57, height: 32 }}
+                resizeMode="contain"
+                accessible={false}
+                importantForAccessibility="no"
+              />
             </View>
-            <TouchableOpacity onPress={resetAndClose} style={styles.closeBtn}>
+            <TouchableOpacity
+              onPress={resetAndClose}
+              style={styles.closeBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar janela de doação"
+            >
               <Text style={styles.closeBtnText}>✕</Text>
             </TouchableOpacity>
           </View>
@@ -88,6 +100,9 @@ export function DonationModal({ visible, onClose }: DonationModalProps) {
                     styles.freqBtn,
                     selectedFrequency === 'monthly' && styles.freqBtnActive,
                   ]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: selectedFrequency === 'monthly' }}
+                  accessibilityLabel="Apoio Mensal Recorrente"
                 >
                   <Text
                     style={[
@@ -106,6 +121,9 @@ export function DonationModal({ visible, onClose }: DonationModalProps) {
                     styles.freqBtn,
                     selectedFrequency === 'once' && styles.freqBtnActive,
                   ]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: selectedFrequency === 'once' }}
+                  accessibilityLabel="Doação Única"
                 >
                   <Text
                     style={[
@@ -131,6 +149,9 @@ export function DonationModal({ visible, onClose }: DonationModalProps) {
                         setCustomValue('');
                       }}
                       style={[styles.valueOption, isSelected && styles.valueOptionSelected]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isSelected }}
+                      accessibilityLabel={`Doar R$ ${val}`}
                     >
                       <Text
                         style={[
@@ -155,6 +176,7 @@ export function DonationModal({ visible, onClose }: DonationModalProps) {
                   value={customValue}
                   onChangeText={(text) => setCustomValue(text.replace(/[^0-9]/g, ''))}
                   style={styles.customInput}
+                  accessibilityLabel="Digitar outro valor em reais"
                 />
               </View>
 

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
+  TouchableOpacity,
   StyleSheet,
   useWindowDimensions,
   Platform,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { AmazonTexture } from './AmazonTexture';
-import { AnimatedCounter } from './AnimatedCounter';
 import { FadeInUp } from './FadeInUp';
+import { DonationHeartIcon } from './icons/DonationHeartIcon';
+import { ArrowRight } from './icons/ArrowRight';
 
 interface Testimonial {
   quote: string;
@@ -24,140 +25,228 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     quote:
-      'Antes do apoio técnico do INÃ, vendíamos o açaí e a farinha pelo preço que o atravessador impunha. Hoje temos cooperativa própria, selo de origem e garantia de renda digna para mais de 85 famílias.',
+      'A parceria comunitária com o INÃ impulsionou nossos grupos produtivos, garantindo autonomia, manejo responsável e fortalecimento social em nossa comunidade.',
     author: 'Dona Raimunda Nonata',
-    role: 'Agricultora & Liderança Comunitária',
-    location: 'Resex Caeté-Taperaçu, Bragança/PA',
+    role: 'Agricultora & Liderança Local',
+    location: 'Comunidade Modelo / Região Norte',
     initials: 'RN',
     badge: 'Produção Sustentável',
     stars: 5,
   },
   {
     quote:
-      'O INÃ não veio nos ensinar o que a floresta é. Veio nos ouvir e valorizar o que nossos avós já faziam. Recuperamos três nascentes de igarapé e hoje temos água pura para as crianças da aldeia.',
+      'O trabalho valoriza nossos saberes ancestrais e fortalece a gestão das águas e das matas com metodologia colaborativa e escuta atenta.',
     author: 'Seu Benedito de Paula',
     role: 'Mestre Tradicional e Pescador Artesanal',
-    location: 'Comunidade Chaú / Baixo Amazonas',
+    location: 'Comunidade Chaú / Território Tradicional',
     initials: 'BP',
     badge: 'Guardião das Águas',
     stars: 5,
   },
   {
     quote:
-      'A metodologia do INÃ é referência nacional: alia a sabedoria ancestral das comunidades com dados científicos e monitoramento geoespacial. Um exemplo de conservação produtiva com base comunitária.',
+      'Uma metodologia que alia conhecimento de campo com boas práticas de monitoramento e impacto socioambiental mensurável a longo prazo.',
     author: 'Dra. Mariana Caldas',
-    role: 'Pesquisadora em Ecologia e Manejo Florestal',
-    location: 'MPEG / Belém',
+    role: 'Pesquisadora em Ecologia e Conservação',
+    location: 'Centro de Pesquisas Aplicadas',
     initials: 'MC',
-    badge: 'Ciência & Pesquisa',
+    badge: 'Ciência & Conservação',
     stars: 5,
   },
   {
     quote:
-      'Como parceiro institucional, o que mais impressiona no INÃ é o rigor e a transparência em cada relatório. O investimento chega direto na ponta com impacto mensurável e respeito absoluto às comunidades.',
+      'Transparência impecável em cada prestação e um compromisso real com a transformação direta de famílias e ecossistemas.',
     author: 'Carlos Eduardo Alencar',
-    role: 'Coordenador de Parcerias e Governança',
-    location: 'Rede Clima e Territórios',
+    role: 'Gestor de Parcerias Institucionais',
+    location: 'Rede de Apoio Territorial',
     initials: 'CA',
-    badge: 'Transparência Auditada',
+    badge: 'Governança & Impacto',
     stars: 5,
   },
 ];
 
-export function SocialProofSection() {
+interface SocialProofSectionProps {
+  onOpenDonate?: () => void;
+  onNavigate?: (tab: string) => void;
+}
+
+export function SocialProofSection({
+  onOpenDonate,
+  onNavigate,
+}: SocialProofSectionProps) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const isTablet = width >= 720 && width < 1024;
 
   const horizontalPadding = isDesktop ? 76.8 : isTablet ? 40 : 20;
 
+  // Carousel state
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // In desktop we show 2 cards at a time; in mobile 1 card at a time
+  const itemsPerPage = isDesktop ? 2 : 1;
+  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : totalPages - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
+  };
+
+  const visibleTestimonials = testimonials.slice(
+    currentIndex * itemsPerPage,
+    currentIndex * itemsPerPage + itemsPerPage
+  );
+
   return (
     <View style={styles.section}>
-      {/* Amazonian organic river texture background watermark */}
-      <AmazonTexture variant="river" color="#193322" opacity={0.06} />
-
       <View style={[styles.container, { paddingHorizontal: horizontalPadding }]}>
         {/* Section Header */}
         <FadeInUp delay={60} distance={18}>
-          <View style={styles.headerCol}>
-            <View style={styles.kickerRow}>
-              <View style={styles.kickerDot} />
-              <Text style={styles.kickerText}>PROVA SOCIAL & VOZES DA FLORESTA</Text>
-            </View>
-            <Text style={[styles.heading, isDesktop ? styles.headingDesktop : isTablet ? styles.headingTablet : styles.headingMobile]}>
-              Quem vive e constrói com o INÃ.
-            </Text>
-            <Text style={styles.subtitle}>
-              Histórias reais de lideranças, agricultores e especialistas que transformam a realidade da Amazônia ao lado do Instituto.
-            </Text>
-          </View>
-        </FadeInUp>
-
-        {/* Quick Numbers / Proof Bar with animated numbers */}
-        <FadeInUp delay={160} distance={22}>
-          <View style={[styles.proofBar, !isDesktop && styles.proofBarMobile]}>
-            <View style={[styles.proofItem, !isDesktop && styles.proofItemMobile]}>
-              <AnimatedCounter target={1420} prefix="+" formatThousands={true} style={styles.proofValue} />
-              <Text style={styles.proofLabel}>Famílias com renda fortalecida</Text>
-            </View>
-
-            <View style={[styles.proofItem, !isDesktop && styles.proofItemMobile]}>
-              <AnimatedCounter target={12} style={styles.proofValue} />
-              <Text style={styles.proofLabel}>Comunidades tradicionais atendidas</Text>
-            </View>
-
-            <View style={[styles.proofItem, !isDesktop && styles.proofItemMobile]}>
-              <AnimatedCounter target={100} suffix="%" style={styles.proofValue} />
-              <Text style={styles.proofLabel}>Prestação de contas e relatórios auditados</Text>
-            </View>
-
-            <View style={[styles.proofItem, !isDesktop && styles.proofItemMobile]}>
-              <AnimatedCounter target={38000} formatThousands={true} style={styles.proofValue} />
-              <Text style={styles.proofLabel}>Hectares de floresta sob manejo comunitário</Text>
-            </View>
-          </View>
-        </FadeInUp>
-
-        {/* Testimonials Grid (2 columns on Desktop, 1 on Mobile) with staggered entrance */}
-        <View style={[styles.grid, !isDesktop && styles.gridMobile]}>
-          {testimonials.map((item, index) => (
-            <FadeInUp
-              key={index}
-              delay={220 + index * 120}
-              distance={26}
-              style={[styles.card, !isDesktop ? styles.cardFullWidth : undefined]}
-            >
-              {/* Card Header with Stars and Tag */}
-              <View style={styles.cardTopRow}>
-                <View style={styles.starsRow}>
-                  {Array.from({ length: item.stars }).map((_, sIdx) => (
-                    <Text key={sIdx} style={styles.starText}>★</Text>
-                  ))}
-                </View>
-                <View style={styles.badgePill}>
-                  <Text style={styles.badgePillText}>{item.badge}</Text>
-                </View>
+          <View style={styles.headerRow}>
+            <View style={styles.headerCol}>
+              <View style={styles.kickerRow}>
+                <View style={styles.kickerDot} />
+                <Text style={styles.kickerText}>PROVA SOCIAL & VOZES DA FLORESTA</Text>
               </View>
-
-              {/* Quote Content */}
-              <Text style={styles.quoteText}>
-                “{item.quote}”
+              <Text
+                style={[
+                  styles.heading,
+                  isDesktop
+                    ? styles.headingDesktop
+                    : isTablet
+                    ? styles.headingTablet
+                    : styles.headingMobile,
+                ]}
+              >
+                Quem vive e constrói com o INÃ.
               </Text>
+              <Text style={styles.subtitle}>
+                Depoimentos de lideranças, parceiros e especialistas que constroem
+                diariamente caminhos sustentáveis e solidários.
+              </Text>
+            </View>
 
-              {/* Author Row */}
-              <View style={styles.authorRow}>
-                <View style={styles.avatarCircle}>
-                  <Text style={styles.avatarText}>{item.initials}</Text>
+            {/* Carousel Navigation Arrows */}
+            <View style={styles.carouselNavButtons}>
+              <TouchableOpacity
+                onPress={prevSlide}
+                style={styles.navButton}
+                accessibilityRole="button"
+                accessibilityLabel="Depoimento anterior"
+              >
+                <Text style={styles.navButtonText}>←</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={nextSlide}
+                style={styles.navButton}
+                accessibilityRole="button"
+                accessibilityLabel="Próximo depoimento"
+              >
+                <Text style={styles.navButtonText}>→</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </FadeInUp>
+
+        {/* Carousel Cards View */}
+        <View style={styles.carouselWrapper}>
+          <View style={[styles.grid, !isDesktop && styles.gridMobile]}>
+            {visibleTestimonials.map((item, index) => (
+              <FadeInUp
+                key={`${currentIndex}-${index}`}
+                delay={80 + index * 80}
+                distance={20}
+                style={[
+                  styles.card,
+                  isDesktop ? styles.cardDesktop : styles.cardFullWidth,
+                ]}
+              >
+                {/* Card Header with Stars and Tag */}
+                <View style={styles.cardTopRow}>
+                  <View
+                    style={styles.starsRow}
+                    accessible={true}
+                    accessibilityLabel={`Avaliação: ${item.stars} de 5 estrelas`}
+                  >
+                    {Array.from({ length: item.stars }).map((_, sIdx) => (
+                      <Text
+                        key={sIdx}
+                        style={styles.starText}
+                        accessible={false}
+                        importantForAccessibility="no"
+                      >
+                        ★
+                      </Text>
+                    ))}
+                  </View>
+                  <View style={styles.badgePill}>
+                    <Text style={styles.badgePillText}>{item.badge}</Text>
+                  </View>
                 </View>
-                <View style={styles.authorInfoCol}>
-                  <Text style={styles.authorName}>{item.author}</Text>
-                  <Text style={styles.authorRole}>{item.role}</Text>
-                  <Text style={styles.authorLocation}>{item.location}</Text>
+
+                {/* Quote Content */}
+                <Text style={styles.quoteText}>“{item.quote}”</Text>
+
+                {/* Author Row */}
+                <View style={styles.authorRow}>
+                  <View style={styles.avatarCircle}>
+                    <Text style={styles.avatarText}>{item.initials}</Text>
+                  </View>
+                  <View style={styles.authorInfoCol}>
+                    <Text style={styles.authorName}>{item.author}</Text>
+                    <Text style={styles.authorRole}>{item.role}</Text>
+                    <Text style={styles.authorLocation}>{item.location}</Text>
+                  </View>
                 </View>
-              </View>
-            </FadeInUp>
-          ))}
+              </FadeInUp>
+            ))}
+          </View>
+
+          {/* Pagination Indicators */}
+          <View style={styles.paginationRow}>
+            {Array.from({ length: totalPages }).map((_, pageIdx) => (
+              <TouchableOpacity
+                key={pageIdx}
+                onPress={() => setCurrentIndex(pageIdx)}
+                style={[
+                  styles.dot,
+                  currentIndex === pageIdx && styles.dotActive,
+                ]}
+                accessibilityLabel={`Slide ${pageIdx + 1}`}
+              />
+            ))}
+          </View>
         </View>
+
+        {/* CTAs directly below social proof */}
+        <FadeInUp delay={200} distance={20}>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={() => onNavigate && onNavigate('Voluntários')}
+              style={styles.volunteerButton}
+              accessibilityRole="button"
+              accessibilityLabel="Ser um voluntário"
+            >
+              <Text style={styles.volunteerButtonText}>Ser um voluntário</Text>
+              <ArrowRight size={17} color={colors.primary} strokeWidth={1.8} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={onOpenDonate}
+              style={styles.donateButton}
+              accessibilityRole="button"
+              accessibilityLabel="Fazer doação"
+            >
+              <DonationHeartIcon size={18} color={colors.white} />
+              <Text style={styles.donateButtonText}>Fazer doação</Text>
+            </TouchableOpacity>
+          </View>
+        </FadeInUp>
       </View>
     </View>
   );
@@ -178,8 +267,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: 36,
+    flexWrap: 'wrap',
+    gap: 20,
+  },
   headerCol: {
-    marginBottom: 44,
     maxWidth: 780,
   },
   kickerRow: {
@@ -228,50 +324,38 @@ const styles = StyleSheet.create({
     color: colors.subtleText,
     fontWeight: '400',
   },
-  proofBar: {
+  carouselNavButtons: {
     flexDirection: 'row',
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    paddingVertical: 26,
-    paddingHorizontal: 32,
-    marginBottom: 44,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 20,
+    gap: 12,
   },
-  proofBarMobile: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-    gap: 20,
+  navButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: 'rgba(25, 51, 34, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+      },
+    }),
   },
-  proofItem: {
-    flex: 1,
+  navButtonText: {
+    fontSize: 20,
+    color: colors.primary,
+    fontWeight: '700',
+    lineHeight: 22,
   },
-  proofItemMobile: {
+  carouselWrapper: {
     width: '100%',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'rgba(255, 255, 255, 0.15)',
-    paddingBottom: 12,
-  },
-  proofValue: {
-    fontFamily: fonts.serif,
-    fontSize: 34,
-    lineHeight: 38,
-    color: colors.accent,
-    fontWeight: '400',
-    marginBottom: 4,
-  },
-  proofLabel: {
-    fontFamily: fonts.sans,
-    fontSize: 12,
-    lineHeight: 18,
-    color: 'rgba(255, 255, 255, 0.82)',
   },
   grid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 24,
   },
   gridMobile: {
@@ -279,17 +363,21 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   card: {
-    width: 'calc(50% - 12px)' as any,
     backgroundColor: colors.white,
     borderRadius: 20,
     padding: 32,
     borderWidth: 1,
     borderColor: 'rgba(25, 51, 34, 0.08)',
+    minHeight: 260,
+    justifyContent: 'space-between',
     ...Platform.select({
       web: {
         boxShadow: '0 8px 24px rgba(25, 51, 34, 0.04)',
       },
     }),
+  },
+  cardDesktop: {
+    flex: 1,
   },
   cardFullWidth: {
     width: '100%',
@@ -367,5 +455,74 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#6e7a68',
     marginTop: 1,
+  },
+  paginationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 28,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'rgba(20, 61, 43, 0.2)',
+  },
+  dotActive: {
+    width: 28,
+    backgroundColor: colors.primary,
+  },
+  actionsContainer: {
+    marginTop: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  volunteerButton: {
+    backgroundColor: colors.white,
+    borderColor: colors.primary,
+    borderWidth: 1.5,
+    borderRadius: 100,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+      },
+    }),
+  },
+  volunteerButtonText: {
+    fontFamily: fonts.sansBold,
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  donateButton: {
+    backgroundColor: colors.primaryButton,
+    borderRadius: 100,
+    paddingHorizontal: 30,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        boxShadow: '0 4px 16px rgba(22, 75, 53, 0.24)',
+      },
+    }),
+  },
+  donateButtonText: {
+    fontFamily: fonts.sansBold,
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: '700',
   },
 });

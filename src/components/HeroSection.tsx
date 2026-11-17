@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, fonts } from '../constants/theme';
 import { ArrowRight } from './icons/ArrowRight';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+import { DonationHeartIcon } from './icons/DonationHeartIcon';
 import { FadeInUp } from './FadeInUp';
 
 const heroBg = require('../../assets/hero-bg.png');
@@ -49,8 +49,8 @@ export function HeroSection({ onOpenDonate, onNavigate }: HeroSectionProps = {})
       >
         <ImageBackground
           source={heroBg}
-          style={StyleSheet.absoluteFill}
-          imageStyle={styles.backgroundImage}
+          style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]}
+          imageStyle={[styles.backgroundImage, { width: '100%', height: '100%' }]}
           resizeMode="cover"
         >
           {/* Horizontal Gradient Overlay (left to right) */}
@@ -87,7 +87,7 @@ export function HeroSection({ onOpenDonate, onNavigate }: HeroSectionProps = {})
           >
             {/* Tag / Kicker */}
             <FadeInUp delay={80} distance={14}>
-              <Text style={styles.kicker}>INÃ SIGNIFICA NÓS</Text>
+              <Text style={styles.kicker}>FORTALECENDO LIDERANÇAS LOCAIS</Text>
             </FadeInUp>
 
             {/* Main Heading */}
@@ -101,15 +101,15 @@ export function HeroSection({ onOpenDonate, onNavigate }: HeroSectionProps = {})
                   },
                 ]}
               >
-                Uma nova Amazônia começa por quem vive nela.
+                Construindo uma nova Amazônia a partir de quem nela vive.
               </Text>
             </FadeInUp>
 
             {/* Subtitle */}
             <FadeInUp delay={300} distance={20}>
               <Text style={styles.subtitle}>
-                Construímos caminhos para o desenvolvimento sustentável, econômico e
-                igualitário de comunidades tradicionais e em situação de risco.
+                Uma organização que defende as populações tradicionais, o patrimônio cultural e o
+                desenvolvimento sustentável a partir da liderança e dos saberes de quem habita a floresta.
               </Text>
             </FadeInUp>
 
@@ -121,25 +121,23 @@ export function HeroSection({ onOpenDonate, onNavigate }: HeroSectionProps = {})
                 onPress={onOpenDonate}
                 style={styles.primaryButton}
                 accessibilityRole="button"
-                accessibilityLabel="Quero transformar junto"
+                accessibilityLabel="Fazer doação"
               >
-                <Text style={styles.primaryButtonText}>Quero transformar junto</Text>
-                <View style={styles.buttonArrowWrapper}>
-                  <ArrowRight size={18} color={colors.accentDarkText} strokeWidth={1.4} />
-                </View>
+                <DonationHeartIcon size={18} color={colors.accentDarkText} />
+                <Text style={styles.primaryButtonText}>Fazer doação</Text>
               </TouchableOpacity>
 
               {/* Secondary Link */}
               <TouchableOpacity
                 activeOpacity={0.75}
-                onPress={() => onNavigate && onNavigate('O Instituto')}
+                onPress={() => onNavigate && onNavigate('Projetos')}
                 style={styles.secondaryLink}
                 accessibilityRole="button"
-                accessibilityLabel="Conheça o INÃ"
+                accessibilityLabel="Conheça os projetos"
               >
-                <Text style={styles.secondaryLinkText}>Conheça o INÃ</Text>
+                <Text style={styles.secondaryLinkText}>Conheça os projetos</Text>
                 <View style={styles.linkArrowWrapper}>
-                  <ArrowUpRight size={17} color={colors.white} strokeWidth={1.4} />
+                  <ArrowRight size={17} color={colors.white} strokeWidth={1.4} />
                 </View>
               </TouchableOpacity>
             </FadeInUp>

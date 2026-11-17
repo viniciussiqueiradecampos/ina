@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,20 @@ import {
   StyleSheet,
   useWindowDimensions,
   Platform,
+  Image,
+  Animated,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from './icons/ArrowUpRight';
-import { AmazonTexture } from './AmazonTexture';
+import { ArrowRight } from './icons/ArrowRight';
+
+const textureOrganicLines = require('../../assets/texture-organic-lines.png');
+const textureBannerOutline = require('../../assets/texture-banner-outline.png');
+const inaLogoBanner = require('../../assets/ina-logo-white.png');
+
+const cyclingWords = ['Floresta', 'Cultura', 'Resistência', 'Futuro', 'INÃ'];
+
+// Banner box minHeight (must match styles.banner.minHeight below)
+const BANNER_HEIGHT = 130;
 
 interface AboutSectionProps {
   onOpenDonate?: () => void;
@@ -22,96 +32,157 @@ export function AboutSection({ onOpenDonate, onNavigate }: AboutSectionProps) {
   const isTablet = width >= 768 && width < 1024;
 
   const horizontalPadding = isDesktop ? 76.8 : isTablet ? 40 : 24;
-  const headingFontSize = isDesktop ? 80 : isTablet ? 56 : 38;
-  const headingLineHeight = isDesktop ? 82 : isTablet ? 58 : 42;
+  const headingFontSize = isDesktop ? 92 : isTablet ? 64 : 44;
+  const headingLineHeight = isDesktop ? 90 : isTablet ? 66 : 48;
+
+  // Typewriter effect state
+  const [wordIndex, setWordIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentWord = cyclingWords[wordIndex];
+    let timer: any;
+
+    if (!isDeleting) {
+      if (displayedText.length < currentWord.length) {
+        // Typing
+        timer = setTimeout(() => {
+          setDisplayedText(currentWord.slice(0, displayedText.length + 1));
+        }, 110);
+      } else {
+        // Pause at full word before deleting
+        timer = setTimeout(() => {
+          setIsDeleting(true);
+        }, 1800);
+      }
+    } else {
+      if (displayedText.length > 0) {
+        // Deleting
+        timer = setTimeout(() => {
+          setDisplayedText(displayedText.slice(0, -1));
+        }, 55);
+      } else {
+        // Move to next word
+        setIsDeleting(false);
+        setWordIndex((prev) => (prev + 1) % cyclingWords.length);
+      }
+    }
+
+    return () => clearTimeout(timer);
+  }, [displayedText, isDeleting, wordIndex]);
 
   return (
-    <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
-      {/* Subtle organic Amazonian foliage texture */}
-      <AmazonTexture variant="foliage" color={colors.primary} opacity={0.045} />
+    <View style={styles.outerContainer}>
+      {/* ── Text content area ── */}
+      <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
+        {/* Background organic lines watermark */}
+        <Image
+          source={textureOrganicLines}
+          style={styles.bgTexture}
+          resizeMode="cover"
+          pointerEvents="none"
+        />
 
-      <View style={styles.container}>
-        {/* Top Two Column Content */}
-        <View style={[styles.contentRow, !isDesktop && styles.contentRowMobile]}>
-          {/* Left Column: Big Heading */}
-          <View style={[styles.leftCol, !isDesktop && styles.fullWidth]}>
-            <Text
-              style={[
-                styles.heading,
-                {
-                  fontSize: headingFontSize,
-                  lineHeight: headingLineHeight,
-                },
-              ]}
-            >
-              INÃ é uma palavra de origem indígena.
-            </Text>
-          </View>
-
-          {/* Right Column: Paragraphs & Link */}
-          <View style={[styles.rightCol, !isDesktop && styles.fullWidth]}>
-            <Text style={styles.leadParagraph}>
-              Além de uma sigla, significa “nós” ou “pessoas” — um nome que traduz a
-              Amazônia pensada a partir de quem vive e conhece este território.
-            </Text>
-
-            <Text style={styles.bodyParagraph}>
-              Somos uma ONG que nasce da preocupação com a falta de apoio técnico e social
-              para o desenvolvimento sustentável, econômico e igualitário de comunidades
-              tradicionais e em situação de risco.
-            </Text>
-
-            <TouchableOpacity
-              activeOpacity={0.75}
-              onPress={() => onNavigate && onNavigate('O Instituto')}
-              style={styles.historyLink}
-              accessibilityRole="button"
-              accessibilityLabel="Conheça nossa história"
-            >
-              <Text style={styles.historyLinkText}>Conheça nossa história</Text>
-              <View style={styles.arrowWrapper}>
-                <ArrowUpRight size={17} color={colors.primary} strokeWidth={1.5} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Bottom Green Banner (Node 21:62) with CTA button */}
-        <View style={styles.bannerContainer}>
-          <View style={[styles.banner, !isDesktop && styles.bannerMobile]}>
-            <View style={styles.bannerCol1}>
-              <Text style={styles.bannerTitle}>INÃ</Text>
-            </View>
-
-            <View style={styles.bannerCol2}>
-              <Text style={styles.bannerDotsText}>
-                nós • pessoas • coletivo • futuro
+        <View style={styles.container}>
+          <View style={[styles.contentRow, !isDesktop && styles.contentRowMobile]}>
+            {/* Left — Instituto\nNova Amazônia */}
+            <View style={[styles.leftCol, !isDesktop && styles.fullWidth]}>
+              <Text
+                style={[
+                  styles.headingLine,
+                  { fontSize: headingFontSize, lineHeight: headingLineHeight },
+                ]}
+              >
+                Instituto{'\n'}Nova Amazônia
               </Text>
             </View>
 
-            {/* CTA Button to Donate */}
-            <TouchableOpacity
-              activeOpacity={0.88}
-              onPress={onOpenDonate}
-              style={styles.bannerDonateBtn}
-              accessibilityRole="button"
-              accessibilityLabel="Fazer doação para o INÃ"
-            >
-              <Text style={styles.bannerDonateBtnText}>Fazer uma doação</Text>
-              <View style={styles.bannerDonateBtnArrow}>
-                <ArrowUpRight size={16} color={colors.accentDarkText} strokeWidth={2} />
-              </View>
-            </TouchableOpacity>
+            {/* Right — paragraphs */}
+            <View style={[styles.rightCol, !isDesktop && styles.fullWidth]}>
+              <Text style={styles.leadParagraph}>
+                Além de uma sigla, INÃ significa "nós" ou "pessoas", um nome que traduz a
+                Amazônia pensada a partir de quem vive e conhece este território.
+              </Text>
+              <Text style={styles.bodyParagraph}>
+                Somos uma ONG que nasce da preocupação com a falta de apoio técnico e social
+                para o desenvolvimento sustentável, econômico e igualitário de comunidades
+                tradicionais e em situação de risco.
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.75}
+                onPress={() => onNavigate && onNavigate('Quem Somos')}
+                style={styles.historyLink}
+                accessibilityRole="button"
+                accessibilityLabel="Conheça nossa ONG"
+              >
+                <Text style={styles.historyLinkText}>Conheça nossa ONG</Text>
+                <View style={styles.arrowWrapper}>
+                  <ArrowRight size={17} color={colors.primary} strokeWidth={1.5} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
 
-            {isDesktop && (
-              <View style={styles.bannerDecorative} pointerEvents="none">
-                <View style={styles.skewPattern}>
-                  <View style={styles.skewBar1} />
-                  <View style={styles.skewBar2} />
-                  <View style={styles.skewBar3} />
+      {/* ── Banner area — full viewport width ── */}
+      {/* Texture starts at 50% of banner height and extends ~150px below */}
+      <View style={styles.bannerArea}>
+        {/* Texture: absolute, full width, bottom-anchored 150px below bannerArea */}
+        <Image
+          source={textureBannerOutline}
+          style={styles.bannerBgTexture}
+          resizeMode="repeat"
+          pointerEvents="none"
+          accessible={false}
+          importantForAccessibility="no"
+        />
+
+        {/* Green box — constrained width, sits on top of texture */}
+        <View style={[styles.bannerInner, { paddingHorizontal: horizontalPadding }]}>
+          <View style={[styles.banner, !isDesktop && styles.bannerMobile]}>
+            {/* Logo Left */}
+            <View style={styles.bannerCol1}>
+              <Image
+                source={inaLogoBanner}
+                style={styles.bannerLogoImage}
+                resizeMode="contain"
+                accessible={true}
+                accessibilityLabel="Logo INÃ"
+              />
+            </View>
+
+            {/* Animated "Nós somos [word]" Center com efeito máquina de escrever */}
+            <View style={styles.bannerCol2}>
+              <View
+                style={styles.animatedTextRow}
+                accessible={true}
+                accessibilityLabel={`Nós somos ${displayedText || 'INÃ'}`}
+              >
+                <Text style={styles.bannerFixedText}>Nós somos </Text>
+                <View style={styles.typewriterWordWrapper}>
+                  <Text style={styles.bannerCyclingWord}>
+                    {displayedText}
+                  </Text>
+                  <Text style={styles.typewriterCursor} accessible={false} importantForAccessibility="no">|</Text>
                 </View>
               </View>
-            )}
+            </View>
+
+            {/* Transparência Button Right */}
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={() => onNavigate ? onNavigate('Transparência') : onOpenDonate?.()}
+              style={styles.bannerDonateBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Ver página de Transparência do INÃ"
+            >
+              <Text style={styles.bannerDonateBtnText}>Transparência</Text>
+              <View style={styles.bannerDonateBtnArrow}>
+                <ArrowRight size={16} color={colors.primary} strokeWidth={2} />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -120,13 +191,24 @@ export function AboutSection({ onOpenDonate, onNavigate }: AboutSectionProps) {
 }
 
 const styles = StyleSheet.create({
-  section: {
+  outerContainer: {
     width: '100%',
     backgroundColor: colors.background,
-    paddingVertical: 100,
+  },
+
+  /* ── Text section ── */
+  section: {
+    width: '100%',
+    paddingTop: 100,
+    paddingBottom: 60,
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
+  },
+  bgTexture: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.14,
+    zIndex: 0,
   },
   container: {
     width: '100%',
@@ -146,20 +228,20 @@ const styles = StyleSheet.create({
   },
   leftCol: {
     flex: 1,
-    maxWidth: 720,
+    maxWidth: 680,
   },
   rightCol: {
     flex: 1,
-    maxWidth: 560,
+    maxWidth: 520,
     paddingTop: 12,
   },
   fullWidth: {
     maxWidth: '100%',
   },
-  heading: {
+  headingLine: {
     fontFamily: fonts.serif,
     color: colors.primary,
-    letterSpacing: -1.6,
+    letterSpacing: -2,
     fontWeight: '400',
   },
   leadParagraph: {
@@ -186,11 +268,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.primary,
     paddingBottom: 4,
-    ...Platform.select({
-      web: {
-        cursor: 'pointer',
-      },
-    }),
+    ...Platform.select({ web: { cursor: 'pointer' } }),
   },
   historyLinkText: {
     fontFamily: fonts.sansBold,
@@ -205,54 +283,101 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bannerContainer: {
-    marginTop: 80,
+
+  /* ── Banner area (full width) ── */
+  bannerArea: {
     width: '100%',
+    paddingBottom: 50,
+    position: 'relative',
+    overflow: 'visible',
+  },
+  bannerBgTexture: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: 150,
+    zIndex: 0,
+  },
+  bannerInner: {
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 1,
   },
   banner: {
+    width: '100%',
+    maxWidth: 1382.4,
     backgroundColor: colors.primaryButton,
     borderRadius: 20,
-    minHeight: 150,
+    minHeight: BANNER_HEIGHT,
     paddingHorizontal: 50,
-    paddingVertical: 24,
+    paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
     gap: 20,
     overflow: 'hidden',
-    position: 'relative',
   },
   bannerMobile: {
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 28,
     paddingVertical: 32,
     gap: 20,
   },
   bannerCol1: {
     justifyContent: 'center',
+    alignItems: 'flex-start',
+    flexShrink: 0,
   },
-  bannerTitle: {
-    fontFamily: fonts.serif,
-    fontSize: 74,
-    lineHeight: 80,
-    color: colors.accent,
-    fontWeight: '400',
+  bannerLogoImage: {
+    width: 96,
+    height: 54,
   },
   bannerCol2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  animatedTextRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  bannerDotsText: {
-    fontFamily: fonts.sans,
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 2.0,
-    textTransform: 'uppercase',
+  bannerFixedText: {
+    fontFamily: fonts.serif,
+    fontSize: 40,
+    lineHeight: 44,
     color: colors.white,
+    fontWeight: '400',
+    letterSpacing: -0.6,
+  },
+  typewriterWordWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minWidth: 220, // Garante que "Nós somos" fique completamente imóvel e fixo
+  },
+  bannerCyclingWord: {
+    fontFamily: fonts.serif,
+    fontSize: 40,
+    lineHeight: 44,
+    color: colors.accent,
+    fontWeight: '400',
+    letterSpacing: -0.6,
+  },
+  typewriterCursor: {
+    fontFamily: fonts.sans,
+    fontSize: 34,
+    lineHeight: 40,
+    color: colors.accent,
+    fontWeight: '300',
+    marginLeft: 2,
+    opacity: 0.8,
   },
   bannerDonateBtn: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.white,
     borderRadius: 100,
     paddingHorizontal: 24,
     paddingVertical: 14,
@@ -260,6 +385,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     zIndex: 2,
+    flexShrink: 0,
     ...Platform.select({
       web: {
         cursor: 'pointer',
@@ -270,7 +396,7 @@ const styles = StyleSheet.create({
   bannerDonateBtnText: {
     fontFamily: fonts.sansBold,
     fontSize: 13,
-    color: colors.accentDarkText,
+    color: colors.primary,
     fontWeight: '700',
   },
   bannerDonateBtnArrow: {
@@ -278,36 +404,5 @@ const styles = StyleSheet.create({
     height: 18,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  bannerDecorative: {
-    position: 'absolute',
-    right: 40,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    opacity: 0.2,
-  },
-  skewPattern: {
-    flexDirection: 'row',
-    gap: 14,
-    transform: [{ skewX: '-16deg' }],
-  },
-  skewBar1: {
-    width: 24,
-    height: 120,
-    backgroundColor: colors.accent,
-    borderRadius: 6,
-  },
-  skewBar2: {
-    width: 16,
-    height: 120,
-    backgroundColor: colors.white,
-    borderRadius: 6,
-  },
-  skewBar3: {
-    width: 32,
-    height: 120,
-    backgroundColor: colors.accent,
-    borderRadius: 6,
   },
 });

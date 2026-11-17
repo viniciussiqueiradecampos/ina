@@ -8,32 +8,31 @@ import {
   Platform,
   Animated,
   Easing,
+  Image,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from './icons/ArrowUpRight';
-import { AmazonTexture } from './AmazonTexture';
+import { ArrowRight } from './icons/ArrowRight';
+
+const logoAmePet = require('../../assets/Apoiadores/ame-pet.png');
+const logoFundoCasa = require('../../assets/Apoiadores/fundo-casa.webp');
+const logoItauSocial = require('../../assets/Apoiadores/itau-social.png');
+const logoCooperativa = require('../../assets/Apoiadores/cooperativa-catadores.png');
+const logoMovimentoBemMaior = require('../../assets/Apoiadores/movimento-bem-maior.webp');
+const logoPhomenta = require('../../assets/Apoiadores/phomenta.png');
 
 interface Supporter {
+  id: string;
   name: string;
-  category: string;
-  badge: string;
-  iconBg: string;
-  iconColor: string;
+  logo: any;
 }
 
 const supportersList: Supporter[] = [
-  { name: 'Fundo Amazônia', category: 'Fundo Público / BNDES', badge: 'FA', iconBg: '#1e4835', iconColor: '#c9f36b' },
-  { name: 'Rainforest Foundation', category: 'Cooperação Internacional', badge: 'RF', iconBg: '#193f2f', iconColor: '#7dd395' },
-  { name: 'Instituto Clima e Sociedade', category: 'Filantropia Climática', badge: 'iCS', iconBg: '#0f3827', iconColor: '#93e5ab' },
-  { name: 'Fundação Ford', category: 'Direitos & Justiça Social', badge: 'FF', iconBg: '#214e38', iconColor: '#ffffff' },
-  { name: 'FUNBIO', category: 'Fundo Brasileiro de Biodiversidade', badge: 'FB', iconBg: '#18432f', iconColor: '#c9f36b' },
-  { name: 'Fundação Avina', category: 'Desenvolvimento Sustentável', badge: 'AV', iconBg: '#1b4432', iconColor: '#e0f792' },
-  { name: 'Instituto Socioambiental', category: 'Rede Socioambiental', badge: 'ISA', iconBg: '#23523b', iconColor: '#a1e9b7' },
-  { name: 'Fundação W.K. Kellogg', category: 'Comunidades Tradicionais', badge: 'WKK', iconBg: '#1d4834', iconColor: '#ffffff' },
-  { name: 'Instituto Arapyaú', category: 'Desenvolvimento Territorial', badge: 'IA', iconBg: '#133a28', iconColor: '#c9f36b' },
-  { name: 'Coomarca Bragança', category: 'Cooperativa Parceira', badge: 'CB', iconBg: '#24563d', iconColor: '#7ce2a6' },
-  { name: 'Assoc. Caeté-Taperaçu', category: 'Comunidade Tradicional', badge: 'ACT', iconBg: '#1b4633', iconColor: '#e6ff94' },
-  { name: 'MacArthur Foundation', category: 'Apoio Institucional Global', badge: 'MF', iconBg: '#17402d', iconColor: '#ffffff' },
+  { id: 'ame-pet', name: 'Ame Pet', logo: logoAmePet },
+  { id: 'fundo-casa', name: 'Fundo Casa Socioambiental', logo: logoFundoCasa },
+  { id: 'itau-social', name: 'Itaú Social', logo: logoItauSocial },
+  { id: 'cooperativa', name: 'Cooperativa de Catadores', logo: logoCooperativa },
+  { id: 'movimento-bem-maior', name: 'Movimento Bem Maior', logo: logoMovimentoBemMaior },
+  { id: 'phomenta', name: 'Phomenta', logo: logoPhomenta },
 ];
 
 export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: () => void }) {
@@ -43,12 +42,17 @@ export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: (
 
   const horizontalPadding = isDesktop ? 76.8 : isTablet ? 40 : 20;
 
-  // Single card estimate: 270px width + 20px gap = 290px per item
-  const cardWidthWithGap = 290;
-  const singleSetWidth = supportersList.length * cardWidthWithGap; // ~3480px
+  // Single card: 220px width + 24px gap = 244px per item
+  const cardWidthWithGap = 244;
+  const singleSetWidth = supportersList.length * cardWidthWithGap;
 
-  // Triple list for completely seamless non-stop loop
-  const marqueeItems = [...supportersList, ...supportersList, ...supportersList];
+  // Repeat sequence 4 times for completely seamless non-stop loop
+  const marqueeItems = [
+    ...supportersList,
+    ...supportersList,
+    ...supportersList,
+    ...supportersList,
+  ];
 
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -60,7 +64,7 @@ export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: (
       anim = Animated.loop(
         Animated.timing(scrollX, {
           toValue: -singleSetWidth,
-          duration: 38000,
+          duration: 25000,
           easing: Easing.linear,
           useNativeDriver: Platform.OS !== 'web',
         })
@@ -79,9 +83,6 @@ export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: (
 
   return (
     <View style={styles.section}>
-      {/* Amazonian Marajoara subtle background texture */}
-      <AmazonTexture variant="marajoara" color="#c9f36b" opacity={0.04} />
-
       <View style={[styles.headerContainer, { paddingHorizontal: horizontalPadding }]}>
         <View style={styles.headerLeft}>
           <View style={styles.kickerRow}>
@@ -105,11 +106,11 @@ export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: (
           accessibilityLabel="Seja um apoiador institucional"
         >
           <Text style={styles.ctaButtonText}>Seja um parceiro / apoiador</Text>
-          <ArrowUpRight size={17} color={colors.accentDarkText} strokeWidth={1.5} />
+          <ArrowRight size={17} color={colors.accentDarkText} strokeWidth={1.5} />
         </TouchableOpacity>
       </View>
 
-      {/* Infinite Animated Marquee (logos scroll automatically continuously) */}
+      {/* Infinite Animated Marquee com retângulos brancos padronizados */}
       <View style={styles.marqueeOuter}>
         {/* Left & Right Edge Vignette Fades */}
         <View pointerEvents="none" style={styles.leftVignette} />
@@ -124,20 +125,12 @@ export function SupportersSection({ onBecomeSupporter }: { onBecomeSupporter?: (
           ]}
         >
           {marqueeItems.map((supporter, idx) => (
-            <View key={`${supporter.name}-${idx}`} style={styles.supporterCard}>
-              <View style={[styles.logoBadgeContainer, { backgroundColor: supporter.iconBg }]}>
-                <Text style={[styles.badgeLetters, { color: supporter.iconColor }]}>
-                  {supporter.badge}
-                </Text>
-              </View>
-              <View style={styles.supporterTextCol}>
-                <Text style={styles.supporterName} numberOfLines={1}>
-                  {supporter.name}
-                </Text>
-                <Text style={styles.supporterCategory} numberOfLines={1}>
-                  {supporter.category}
-                </Text>
-              </View>
+            <View key={`${supporter.id}-${idx}`} style={styles.whiteLogoBox}>
+              <Image
+                source={supporter.logo}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </View>
           ))}
         </Animated.View>
@@ -226,7 +219,7 @@ const styles = StyleSheet.create({
   marqueeOuter: {
     width: '100%',
     overflow: 'hidden',
-    paddingVertical: 14,
+    paddingVertical: 16,
     position: 'relative',
   },
   leftVignette: {
@@ -234,7 +227,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     left: 0,
-    width: 100,
+    width: 120,
     zIndex: 2,
     ...Platform.select({
       web: {
@@ -250,7 +243,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     right: 0,
-    width: 100,
+    width: 120,
     zIndex: 2,
     ...Platform.select({
       web: {
@@ -264,55 +257,25 @@ const styles = StyleSheet.create({
   marqueeTrack: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
-    width: 12000,
+    gap: 24,
   },
-  supporterCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.07)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+  whiteLogoBox: {
+    width: 220,
+    height: 100,
+    backgroundColor: '#ffffff',
     borderRadius: 16,
-    paddingHorizontal: 22,
-    paddingVertical: 16,
-    width: 270,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
     ...Platform.select({
       web: {
-        cursor: 'auto',
-        backdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 18px rgba(0, 0, 0, 0.25)',
       },
     }),
   },
-  logoBadgeContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.8,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  badgeLetters: {
-    fontFamily: fonts.sansBold,
-    fontSize: 14,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  supporterTextCol: {
-    flex: 1,
-  },
-  supporterName: {
-    fontFamily: fonts.sansBold,
-    fontSize: 14,
-    color: colors.white,
-    fontWeight: '700',
-    marginBottom: 3,
-  },
-  supporterCategory: {
-    fontFamily: fonts.sans,
-    fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.65)',
+  logoImage: {
+    width: '100%',
+    height: '100%',
   },
 });

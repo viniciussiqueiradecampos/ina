@@ -16,10 +16,10 @@ export function InaLogo({ height = 38, variant = 'original' }: InaLogoProps) {
   if (variant === 'white') {
     processedSvg = rawSvg
       .replace(/#526635/g, '#ffffff')
-      .replace(/#8d9f6f/g, '#c9f36b');
+      .replace(/#8d9f6f/g, '#ffffff');
   } else if (variant === 'accent') {
     processedSvg = rawSvg
-      .replace(/#526635/g, '#c9f36b')
+      .replace(/#526635/g, '#8D9F6F')
       .replace(/#8d9f6f/g, '#ffffff');
   }
 

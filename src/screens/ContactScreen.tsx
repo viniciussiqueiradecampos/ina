@@ -110,6 +110,7 @@ export function ContactScreen() {
                       value={name}
                       onChangeText={setName}
                       style={styles.textInput}
+                      accessibilityLabel="Seu nome completo (campo obrigatório)"
                     />
                   </View>
 
@@ -122,12 +123,13 @@ export function ContactScreen() {
                       value={email}
                       onChangeText={setEmail}
                       style={styles.textInput}
+                      accessibilityLabel="Seu e-mail (campo obrigatório)"
                     />
                   </View>
 
                   <View style={styles.fieldGroup}>
                     <Text style={styles.fieldLabel}>Assunto</Text>
-                    <View style={styles.subjectRow}>
+                    <View style={styles.subjectRow} accessibilityRole="radiogroup">
                       {['Parceria Institucional', 'Doações & Apoio', 'Dúvidas / Imprensa', 'Outro'].map((subj) => (
                         <TouchableOpacity
                           key={subj}
@@ -136,6 +138,9 @@ export function ContactScreen() {
                             styles.subjectChip,
                             subject === subj && styles.subjectChipActive,
                           ]}
+                          accessibilityRole="radio"
+                          accessibilityState={{ selected: subject === subj }}
+                          accessibilityLabel={`Assunto: ${subj}`}
                         >
                           <Text
                             style={[
@@ -160,6 +165,7 @@ export function ContactScreen() {
                       value={message}
                       onChangeText={setMessage}
                       style={[styles.textInput, styles.textAreaInput]}
+                      accessibilityLabel="Mensagem (campo obrigatório)"
                     />
                   </View>
 
@@ -167,6 +173,8 @@ export function ContactScreen() {
                     activeOpacity={0.88}
                     onPress={handleSubmit}
                     style={styles.submitButton}
+                    accessibilityRole="button"
+                    accessibilityLabel="Enviar Mensagem de contato"
                   >
                     <Text style={styles.submitButtonText}>Enviar Mensagem</Text>
                     <ArrowRight size={18} color={colors.accentDarkText} strokeWidth={1.5} />

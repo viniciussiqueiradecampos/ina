@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { colors, fonts } from '../constants/theme';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+import { ArrowRight } from './icons/ArrowRight';
 import { AmazonTexture } from './AmazonTexture';
 
 interface TransparencySectionProps {
@@ -59,7 +59,7 @@ export function TransparencySection({ onNavigate }: TransparencySectionProps) {
             accessibilityLabel="Acessar documentos de transparência"
           >
             <Text style={styles.actionButtonText}>Acessar documentos</Text>
-            <ArrowUpRight size={17} color={colors.white} strokeWidth={1.8} />
+            <ArrowRight size={17} color={colors.white} strokeWidth={1.8} />
           </TouchableOpacity>
         </View>
       </View>

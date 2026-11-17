@@ -11,11 +11,16 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, fonts } from '../constants/theme';
 import { ArrowRight } from './icons/ArrowRight';
-import { ArrowUpRight } from './icons/ArrowUpRight';
+import { DonationHeartIcon } from './icons/DonationHeartIcon';
 
 const ctaBg = require('../../assets/hero-bg.png');
 
-export function CTASection() {
+interface CTASectionProps {
+  onOpenDonate?: () => void;
+  onNavigate?: (tab: string) => void;
+}
+
+export function CTASection({ onOpenDonate, onNavigate }: CTASectionProps = {}) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const isTablet = width >= 720 && width < 1024;
@@ -61,23 +66,25 @@ export function CTASection() {
             {/* Primary Button */}
             <TouchableOpacity
               activeOpacity={0.88}
+              onPress={onOpenDonate}
               style={styles.primaryButton}
               accessibilityRole="button"
-              accessibilityLabel="Faça uma contribuição"
+              accessibilityLabel="Fazer doação"
             >
-              <Text style={styles.primaryButtonText}>Faça uma contribuição</Text>
-              <ArrowRight size={18} color={colors.accentDarkText} strokeWidth={1.5} />
+              <DonationHeartIcon size={18} color={colors.accentDarkText} />
+              <Text style={styles.primaryButtonText}>Fazer doação</Text>
             </TouchableOpacity>
 
             {/* Secondary Button */}
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() => onNavigate && onNavigate('Voluntários')}
               style={styles.secondaryButton}
               accessibilityRole="button"
-              accessibilityLabel="Seja voluntário"
+              accessibilityLabel="Ser um voluntário"
             >
-              <Text style={styles.secondaryButtonText}>Seja voluntário</Text>
-              <ArrowUpRight size={17} color={colors.white} strokeWidth={1.5} />
+              <Text style={styles.secondaryButtonText}>Ser um voluntário</Text>
+              <ArrowRight size={17} color={colors.white} strokeWidth={1.5} />
             </TouchableOpacity>
           </View>
         </View>
