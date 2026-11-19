@@ -8,28 +8,23 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { colors, fonts } from '../constants/theme';
 import { DonationHeartIcon } from './icons/DonationHeartIcon';
 import { InstagramIcon, LinkedInIcon, YouTubeIcon } from './icons/SocialIcons';
 
 const inaLogoWhite = require('../../assets/ina-logo-white.png');
 
-interface FooterProps {
-  onNavigate?: (tab: string) => void;
-  onOpenDonate?: () => void;
-}
-
-export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
+export function Footer() {
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const isTablet = width >= 720 && width < 1024;
 
   const horizontalPadding = isDesktop ? 76.8 : isTablet ? 40 : 20;
 
-  const handleNav = (tab: string) => {
-    if (onNavigate) {
-      onNavigate(tab);
-    }
+  const handleNav = (route: string) => {
+    router.push(route as any);
   };
 
   return (
@@ -41,7 +36,7 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
           <View style={styles.brandCol}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => handleNav('Home')}
+              onPress={() => handleNav('/')}
               style={styles.brandRow}
               accessibilityRole="button"
               accessibilityLabel="INÃ — página inicial"
@@ -60,7 +55,7 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
 
             <TouchableOpacity
               activeOpacity={0.85}
-              onPress={onOpenDonate}
+              onPress={() => router.push('/doacao')}
               style={styles.donateFooterButton}
               accessibilityRole="button"
               accessibilityLabel="Fazer doação"
@@ -75,25 +70,25 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
             {/* Column 1 - Header Navigation Labels */}
             <View style={styles.linkCol}>
               <Text style={styles.linkColTitle}>Navegação</Text>
-              <TouchableOpacity onPress={() => handleNav('Home')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Home">
+              <TouchableOpacity onPress={() => handleNav('/')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Home">
                 <Text style={styles.linkItemText}>Home</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Quem Somos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Quem Somos">
+              <TouchableOpacity onPress={() => handleNav('/quem-somos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Quem Somos">
                 <Text style={styles.linkItemText}>Quem Somos</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Projetos">
+              <TouchableOpacity onPress={() => handleNav('/projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Projetos">
                 <Text style={styles.linkItemText}>Projetos</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Voluntários')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Voluntários">
+              <TouchableOpacity onPress={() => handleNav('/voluntarios')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Voluntários">
                 <Text style={styles.linkItemText}>Voluntários</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Transparência')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Transparência">
+              <TouchableOpacity onPress={() => handleNav('/transparencia')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Transparência">
                 <Text style={styles.linkItemText}>Transparência</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Contato')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Contato">
+              <TouchableOpacity onPress={() => handleNav('/contato')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Contato">
                 <Text style={styles.linkItemText}>Contato</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Blog')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Blog">
+              <TouchableOpacity onPress={() => handleNav('/blog')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Blog">
                 <Text style={styles.linkItemText}>Blog</Text>
               </TouchableOpacity>
             </View>
@@ -101,19 +96,19 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
             {/* Column 2 - Projetos */}
             <View style={styles.linkCol}>
               <Text style={styles.linkColTitle}>Projetos</Text>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Piscicultura Artesanal">
+              <TouchableOpacity onPress={() => handleNav('/projetos?id=1')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Piscicultura Artesanal">
                 <Text style={styles.linkItemText}>Piscicultura Artesanal</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Catadores e Reciclagem">
+              <TouchableOpacity onPress={() => handleNav('/projetos?id=2')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Catadores e Reciclagem">
                 <Text style={styles.linkItemText}>Catadores e Reciclagem</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Paneiro do Mangal">
+              <TouchableOpacity onPress={() => handleNav('/projetos?id=3')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Paneiro do Mangal">
                 <Text style={styles.linkItemText}>Paneiro do Mangal</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Biblioteca do Chaú">
+              <TouchableOpacity onPress={() => handleNav('/projetos?id=4')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver projeto Biblioteca do Chaú">
                 <Text style={styles.linkItemText}>Biblioteca do Chaú</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver todas as iniciativas">
+              <TouchableOpacity onPress={() => handleNav('/projetos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver todas as iniciativas">
                 <Text style={styles.linkItemText}>Ver todas iniciativas</Text>
               </TouchableOpacity>
             </View>
@@ -121,16 +116,16 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
             {/* Column 3 - Institucional & Imprensa (Novas páginas exclusivas do menu do footer) */}
             <View style={styles.linkCol}>
               <Text style={styles.linkColTitle}>Institucional & Mídia</Text>
-              <TouchableOpacity onPress={() => handleNav('Na Mídia')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Na Mídia">
+              <TouchableOpacity onPress={() => handleNav('/na-midia')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Na Mídia">
                 <Text style={styles.linkItemText}>Na Mídia</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Marketing')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Marketing e Marca">
+              <TouchableOpacity onPress={() => handleNav('/marketing')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ir para Marketing e Marca">
                 <Text style={styles.linkItemText}>Marketing & Marca</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Transparência')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver Relatórios Anuais na página de Transparência">
+              <TouchableOpacity onPress={() => handleNav('/transparencia')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver Relatórios Anuais na página de Transparência">
                 <Text style={styles.linkItemText}>Relatórios Anuais</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleNav('Quem Somos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver Governança e Estatuto na página Quem Somos">
+              <TouchableOpacity onPress={() => handleNav('/quem-somos')} style={styles.linkItem} accessibilityRole="link" accessibilityLabel="Ver Governança e Estatuto na página Quem Somos">
                 <Text style={styles.linkItemText}>Governança & Estatuto</Text>
               </TouchableOpacity>
             </View>
@@ -138,7 +133,7 @@ export function Footer({ onNavigate, onOpenDonate }: FooterProps) {
             {/* Column 4 - Contato & Redes */}
             <View style={styles.linkCol}>
               <Text style={styles.linkColTitle}>Contato</Text>
-              <TouchableOpacity onPress={() => handleNav('Contato')} style={styles.linkItem}>
+              <TouchableOpacity onPress={() => handleNav('/contato')} style={styles.linkItem}>
                 <Text style={styles.contactItemText}>Fale com a gente</Text>
               </TouchableOpacity>
               <Text style={styles.contactItemText}>contato@institutoina.org</Text>

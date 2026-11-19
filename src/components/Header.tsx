@@ -9,7 +9,9 @@ import {
   Platform,
   Image,
 } from 'react-native';
+import { useRouter, usePathname } from 'expo-router';
 import { colors, fonts } from '../constants/theme';
+import { tabToRoute, routeToTab } from '../lib/navigation';
 
 const inaLogoNova = require('../../assets/logo-ina-nova.webp');
 import { DonationHeartIcon } from './icons/DonationHeartIcon';
@@ -24,25 +26,17 @@ export const navItems = [
   'Blog',
 ];
 
-interface HeaderProps {
-  activeTab?: string;
-  onNavigate?: (tab: string) => void;
-  onOpenDonate?: () => void;
-}
+export function Header() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const activeTab = routeToTab(pathname);
 
-export function Header({
-  activeTab = 'Home',
-  onNavigate,
-  onOpenDonate,
-}: HeaderProps) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 990;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSelectTab = (tab: string) => {
-    if (onNavigate) {
-      onNavigate(tab);
-    }
+    router.push(tabToRoute(tab) as any);
     setMobileMenuOpen(false);
   };
 
@@ -95,7 +89,7 @@ export function Header({
         <View style={styles.actionsRow}>
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={onOpenDonate}
+            onPress={() => router.push('/doacao')}
             style={styles.donateButton}
             accessibilityRole="button"
             accessibilityLabel="Fazer doação"
@@ -186,7 +180,7 @@ export function Header({
                 style={[styles.donateButton, styles.mobileDonateButton]}
                 onPress={() => {
                   setMobileMenuOpen(false);
-                  if (onOpenDonate) onOpenDonate();
+                  router.push('/doacao');
                 }}
               >
                 <View style={styles.donateIcon}>
